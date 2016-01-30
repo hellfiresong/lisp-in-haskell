@@ -13,6 +13,9 @@ import Text.ParserCombinators.Parsec hiding (spaces)
 
 -- Module Dependencies
 import Symbol
+import DataTypeParser
+
+-- Functional module contains some utilities function.
 import Functional
 
 
