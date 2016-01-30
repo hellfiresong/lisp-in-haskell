@@ -8,7 +8,9 @@ module DataTypeParser
 ( parseString
 , parseAtom
 , parseExpr
-, parseNumber) where
+, parseNumber
+, parseList
+, parseQuoted) where
 
 import Control.Monad
 import Text.ParserCombinators.Parsec hiding (spaces)
@@ -31,6 +33,14 @@ parseString = do char '"'
                  char '"'
                  return $ String x
 
+parseList :: Parser LispVal
+parseList = liftM List $ sepBy parseExpr space
+
+parseQuoted :: Parser LispVal
+parseQuoted = do char '\''
+                 x <- parseExpr
+                 return $ List [Atom "quote", x]
+
 parseAtom :: Parser LispVal
 parseAtom =  do first <- letter <|> symbol
                 rest <- many (letter <|> digit <|> symbol)
@@ -44,8 +54,12 @@ parseExpr :: Parser LispVal
 parseExpr = parseAtom
         <|> parseString
         <|> parseNumber
+        <|> parseQuoted
+        <|> do char '('
+               x <- (try parseList)
+               char ')'
+               return x
 
 parseNumber :: Parser LispVal
 parseNumber = liftM (Number .read) $many1 digit
-
 
