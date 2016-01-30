@@ -41,6 +41,11 @@ parseQuoted = do char '\''
                  x <- parseExpr
                  return $ List [Atom "quote", x]
 
+parseDottedList :: Parser LispVal
+parseDottedList = do head <- endBy parseExpr space
+                     tail <- char '.' >> space >> parseExpr
+                     return $ DottedList head tail
+
 parseAtom :: Parser LispVal
 parseAtom =  do first <- letter <|> symbol
                 rest <- many (letter <|> digit <|> symbol)
@@ -56,7 +61,7 @@ parseExpr = parseAtom
         <|> parseNumber
         <|> parseQuoted
         <|> do char '('
-               x <- (try parseList)
+               x <- (try parseList) <|> parseDottedList
                char ')'
                return x
 
