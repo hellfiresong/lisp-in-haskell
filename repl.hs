@@ -13,6 +13,7 @@ import Text.ParserCombinators.Parsec hiding (spaces)
 
 -- Module Dependencies
 import Symbol
+import DataType
 import DataTypeParser
 import Evaluator
 
