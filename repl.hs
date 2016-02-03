@@ -21,14 +21,13 @@ import Evaluator
 import Functional
 
 -- Read expression
-readExpr :: String -> String
+readExpr :: String -> LispVal
 readExpr input = case parse parseExpr "lisp" input of
-    Left err -> "No match: " ++ show err
-    Right val -> "Found value" ++ show val
+    Left err -> String $ "No match: " ++ show err
+    Right val -> val
 
 -- main
 main :: IO()
-main = do args <- getArgs
-          putStrLn (readExpr (args !! 0))
+main = getArgs >>= putStrLn .show .eval .readExpr .(!! 0)
 
 instance Show LispVal where show = showVal
